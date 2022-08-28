@@ -64,7 +64,7 @@ namespace Warship.UnitTests
         }
 
         [Fact]
-        public void WasCoordinateShooted_ForShooted_ReturnTrue()
+        public void WasCoordinateShooted_ForShootedAndHitted_ReturnTrue()
         {
             var coordinate = new Coordinate('D', 10);
             var map = new Map(10, 10);
@@ -73,14 +73,27 @@ namespace Warship.UnitTests
 
             var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y - 1];
             var wasShooted =
-                mapFieldContext == map.hitChar ||
-                mapFieldContext == map.missedChar;
+                mapFieldContext == map.hitChar;
 
             Assert.True(wasShooted);
         }
 
         [Fact]
-        public void WasCoordinateShooted_ForMissed_ReturnFalse()
+        public void WasCoordinateShooted_ForShootedAndMissed_ReturnTrue()
+        {
+            var coordinate = new Coordinate('D', 10);
+            var map = new Map(10, 10);
+
+            map.MarkShoot(coordinate, false);
+
+            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y - 1];
+            var wasShooted = mapFieldContext == map.missedChar;
+
+            Assert.True(wasShooted);
+        }
+
+        [Fact]
+        public void WasCoordinateShooted_ForNotShooted_ReturnFalse()
         {
             var coordinate = new Coordinate('D', 10);
             var map = new Map(10, 10);
