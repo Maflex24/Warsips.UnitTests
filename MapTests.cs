@@ -36,9 +36,11 @@ namespace Warship.UnitTests
 
         [Theory]
         [InlineData('A', 1)]
-        [InlineData('A', 10)]
+        [InlineData('A', 0)]
+        [InlineData('A', 9)]
         [InlineData('J', 1)]
-        [InlineData('J', 10)]
+        [InlineData('J', 0)]
+        [InlineData('J', 9)]
         public void IsCoordinateExist_ForValidValues_ReturnTrue(char x, int y)
         {
             var coordinate = new Coordinate(x, y);
@@ -51,8 +53,10 @@ namespace Warship.UnitTests
 
         [Theory]
         [InlineData('A', 11)]
+        [InlineData('A', 10)]
         [InlineData('K', 1)]
         [InlineData('K', 11)]
+        [InlineData('K', 10)]
         public void IsCoordinateExist_ForWrongValues_ReturnFalse(char x, int y)
         {
             var coordinate = new Coordinate(x, y);
@@ -66,12 +70,12 @@ namespace Warship.UnitTests
         [Fact]
         public void WasCoordinateShooted_ForShootedAndHitted_ReturnTrue()
         {
-            var coordinate = new Coordinate('D', 10);
+            var coordinate = new Coordinate('D', 9);
             var map = new Map(10, 10);
 
             map.MarkShoot(coordinate, true);
 
-            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y - 1];
+            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y];
             var wasShooted =
                 mapFieldContext == map.hitChar;
 
@@ -81,12 +85,12 @@ namespace Warship.UnitTests
         [Fact]
         public void WasCoordinateShooted_ForShootedAndMissed_ReturnTrue()
         {
-            var coordinate = new Coordinate('D', 10);
+            var coordinate = new Coordinate('D', 9);
             var map = new Map(10, 10);
 
             map.MarkShoot(coordinate, false);
 
-            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y - 1];
+            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y];
             var wasShooted = mapFieldContext == map.missedChar;
 
             Assert.True(wasShooted);
@@ -95,10 +99,10 @@ namespace Warship.UnitTests
         [Fact]
         public void WasCoordinateShooted_ForNotShooted_ReturnFalse()
         {
-            var coordinate = new Coordinate('D', 10);
+            var coordinate = new Coordinate('D', 9);
             var map = new Map(10, 10);
 
-            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y - 1];
+            var mapFieldContext = map.MapContext[coordinate.X][coordinate.Y];
             var wasShooted =
                 mapFieldContext == map.hitChar ||
                 mapFieldContext == map.missedChar;
@@ -109,12 +113,12 @@ namespace Warship.UnitTests
         [Fact]
         public void MarkShoot_ForSuccessfulShot_ReturnTrue()
         {
-            var coordinate = new Coordinate('D', 10);
+            var coordinate = new Coordinate('D', 9);
             var map = new Map(10, 10);
 
             map.MarkShoot(coordinate, true);
 
-            var isMarked = map.MapContext[coordinate.X][coordinate.Y - 1] == map.hitChar;
+            var isMarked = map.MapContext[coordinate.X][coordinate.Y] == map.hitChar;
 
             Assert.True(isMarked);
         }
@@ -122,12 +126,12 @@ namespace Warship.UnitTests
         [Fact]
         public void MarkShoot_ForMissedShot_ReturnTrue()
         {
-            var coordinate = new Coordinate('D', 10);
+            var coordinate = new Coordinate('D', 9);
             var map = new Map(10, 10);
 
             map.MarkShoot(coordinate, false);
 
-            var isMarked = map.MapContext[coordinate.X][coordinate.Y - 1] == map.missedChar;
+            var isMarked = map.MapContext[coordinate.X][coordinate.Y] == map.missedChar;
 
             Assert.True(isMarked);
         }
