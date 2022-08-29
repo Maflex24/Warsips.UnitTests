@@ -135,5 +135,47 @@ namespace Warship.UnitTests
 
             Assert.True(isMarked);
         }
+
+        [Fact]
+        public void IsShipOnTargetField_ForShipOnField_ReturnTrue()
+        {
+            var map = new Map(5, 5);
+            var coordinate = new Coordinate('C', 3);
+
+            map.MapContext['C'][3] = map.shipChar;
+
+            Assert.True(map.IsShipOnTargetField(coordinate));
+        }
+
+        [Fact]
+        public void IsShipOnTargetField_ForNoShipOnField_ReturnFalse()
+        {
+            var map = new Map(5, 5);
+            var coordinate = new Coordinate('C', 3);
+
+            Assert.False(map.IsShipOnTargetField(coordinate));
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(3)]
+        [InlineData(5)]
+        public void GetRowsAmount_CheckIsCorrectly(int rows)
+        {
+            var map = new Map(10, rows);
+
+            Assert.Equal(rows, map.GetRowsAmount());
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(3)]
+        [InlineData(5)]
+        public void GetColumnsAmount_CheckIsCorrectly(int columns)
+        {
+            var map = new Map(columns, 10);
+
+            Assert.Equal(columns, map.GetColumnsAmount());
+        }
     }
 }
