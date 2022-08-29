@@ -60,8 +60,7 @@ namespace Warship.UnitTests
 
             foreach (var column in columnValues)
             {
-                var validValues = column.Where(v => v == map.shipChar).Count();
-                shipValues += validValues;
+                shipValues += column.Count(v => v == map.shipChar);
             }
 
             var shipLengthSum = ships.Select(s => s.ShipLength).Sum();
@@ -122,6 +121,120 @@ namespace Warship.UnitTests
                     Assert.True(nextRowIsInLine || nextColumnIsInLine);
                 }
             }
+        }
+
+        [Theory]
+        [InlineData('A', 2)]
+        [InlineData('A', 3)]
+        [InlineData('A', 4)]
+        public void IsOnTarget_ForVerticalPositions_ReturnTrue(char x, int y)
+        {
+            var map = new Map(10, 10);
+            var ship = new Ship("Destroyer", 3, map);
+
+            ship.Coordinates = new List<Coordinate>()
+            {
+                new Coordinate('A', 2),
+                new Coordinate('A', 3),
+                new Coordinate('A', 4)
+            };
+
+            var targetCoordinate = new Coordinate(x, y);
+            var isOnTarget = ship.IsOnTarget(targetCoordinate);
+
+            Assert.True(isOnTarget);
+        }
+
+        [Theory]
+        [InlineData('B', 2)]
+        [InlineData('A', 5)]
+        [InlineData('A', 1)]
+        public void IsOnTarget_ForVerticalPositions_ReturnFalse(char x, int y)
+        {
+            var map = new Map(10, 10);
+            var ship = new Ship("Destroyer", 3, map);
+
+            ship.Coordinates = new List<Coordinate>()
+            {
+                new Coordinate('A', 2),
+                new Coordinate('A', 3),
+                new Coordinate('A', 4)
+            };
+
+            var targetCoordinate = new Coordinate(x, y);
+            var isOnTarget = ship.IsOnTarget(targetCoordinate);
+
+            Assert.False(isOnTarget);
+        }
+
+        [Theory]
+        [InlineData('A', 2)]
+        [InlineData('B', 2)]
+        [InlineData('C', 2)]
+        public void IsOnTarget_ForHorizontalPositions_ReturnTrue(char x, int y)
+        {
+            var map = new Map(10, 10);
+            var ship = new Ship("Destroyer", 3, map);
+
+            ship.Coordinates = new List<Coordinate>()
+            {
+                new Coordinate('A', 2),
+                new Coordinate('B', 2),
+                new Coordinate('C', 2)
+            };
+
+            var targetCoordinate = new Coordinate(x, y);
+            var isOnTarget = ship.IsOnTarget(targetCoordinate);
+
+            Assert.True(isOnTarget);
+        }
+
+        [Theory]
+        [InlineData('A', 1)]
+        [InlineData('A', 3)]
+        [InlineData('B', 3)]
+        [InlineData('C', 3)]
+        public void IsOnTarget_ForHorizontalPositions_ReturnFalse(char x, int y)
+        {
+            var map = new Map(10, 10);
+            var ship = new Ship("Destroyer", 3, map);
+
+            ship.Coordinates = new List<Coordinate>()
+            {
+                new Coordinate('A', 2),
+                new Coordinate('B', 2),
+                new Coordinate('C', 2)
+            };
+
+            var targetCoordinate = new Coordinate(x, y);
+            var isOnTarget = ship.IsOnTarget(targetCoordinate);
+
+            Assert.False(isOnTarget);
+        }
+
+        [Fact]
+        public void IncreaseDamage_ForNotDestroyedShip_CheckIsDamageIncreased()
+        {
+            var map = new Map(3, 3);
+            var ship = new Ship("Someship", 3, map);
+
+            ship.IncreaseDamage();
+
+            Assert.True(ship.DamagesAmount == 1);
+        }
+
+        [Fact]
+        public void IncreaseDamage_ForDestroyedShip_CheckIsDestroyedAndDamageEqualLength()
+        {
+            var map = new Map(3, 3);
+            var ship = new Ship("Someship", 3, map);
+
+            ship.IncreaseDamage();
+            ship.IncreaseDamage();
+            ship.IncreaseDamage();
+
+            Assert.True(ship.DamagesAmount == 3);
+            Assert.True(ship.IsDestroyed);
         }
     }
 }
