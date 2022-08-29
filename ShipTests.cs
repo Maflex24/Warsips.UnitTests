@@ -43,7 +43,7 @@ namespace Warship.UnitTests
         }
 
         [Fact]
-        public void PositionShip_ForThreeShipsRandomPositioned_CheckHowManyShipsFieldsOnMap()
+        public void PositionShip_ForThreeShipsRandomPositioned_CheckShipFieldsOnMapAndCoordinatesAmount()
         {
             var map = new Map(10, 10);
             var ships = new List<Ship>()
@@ -64,7 +64,64 @@ namespace Warship.UnitTests
                 shipValues += validValues;
             }
 
-            Assert.Equal(15, shipValues);
+            var shipLengthSum = ships.Select(s => s.ShipLength).Sum();
+
+            var coordinatesElementsSum = ships.Select(s => s.Coordinates.ToList().Count()).Sum();
+
+            Assert.Equal(shipLengthSum, shipValues);
+            Assert.Equal(shipLengthSum, coordinatesElementsSum);
+        }
+
+        [Fact]
+        public void PositionShip_ForFewShips_CheckMapAndCoordinatesCompatibility()
+        {
+            var map = new Map(10, 10);
+            var ships = new List<Ship>()
+            {
+                new Ship("Little", 3, map),
+                new Ship("Little 2", 3, map),
+                new Ship("Middle", 5, map),
+                new Ship("Great War", 7, map)
+            };
+
+            ships.ForEach(s => s.PositionShip());
+
+            foreach (var ship in ships)
+            {
+                foreach (var shipCoordinate in ship.Coordinates)
+                {
+                    Assert.True(map.MapContext[shipCoordinate.X][shipCoordinate.Y] == map.shipChar);
+                }
+            }
+        }
+
+        [Fact]
+        public void PositionShip_ForFewShips_CheckAreCoordinatesInTheSameBlock()
+        {
+            var map = new Map(10, 10);
+            var ships = new List<Ship>()
+            {
+                new Ship("Little", 3, map),
+                new Ship("Little 2", 3, map),
+                new Ship("Middle", 5, map),
+                new Ship("Great War", 7, map)
+            };
+
+            ships.ForEach(s => s.PositionShip());
+
+            foreach (var ship in ships)
+            {
+                for (var i = 0; i < ship.Coordinates.Count - 1; i++)
+                {
+                    var currentCoordinate = ship.Coordinates[i];
+                    var nextCoordinate = ship.Coordinates[i + 1];
+
+                    var nextColumnIsInLine = currentCoordinate.X + 1 == nextCoordinate.X;
+                    var nextRowIsInLine = currentCoordinate.Y + 1 == nextCoordinate.Y;
+
+                    Assert.True(nextRowIsInLine || nextColumnIsInLine);
+                }
+            }
         }
     }
 }
