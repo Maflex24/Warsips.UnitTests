@@ -1,4 +1,4 @@
-using Warship.Classes;
+using Warships.Classes;
 using Xunit;
 
 namespace Warship.UnitTests
